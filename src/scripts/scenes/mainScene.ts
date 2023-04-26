@@ -2,26 +2,47 @@ import PhaserLogo from '../objects/phaserLogo'
 import FpsText from '../objects/fpsText'
 
 export default class MainScene extends Phaser.Scene {
-  fpsText
+	fpsText
 
-  constructor() {
-    super({ key: 'MainScene' })
-  }
+	constructor() {
+		super({ key: 'MainScene' })
+	}
 
-  create() {
-    new PhaserLogo(this, this.cameras.main.width / 2, 0)
-    this.fpsText = new FpsText(this)
+	create() {
+		const player = new PhaserLogo(this, this.cameras.main.width / 2, this.cameras.main.height)
 
-    // display the Phaser.VERSION
-    this.add
-      .text(this.cameras.main.width - 15, 15, `Phaser v${Phaser.VERSION}`, {
-        color: '#000000',
-        fontSize: '24px'
-      })
-      .setOrigin(1, 0)
-  }
 
-  update() {
-    this.fpsText.update()
-  }
+		if (this.input && this.input.keyboard) {
+			var cursors = this.input.keyboard.createCursorKeys()
+
+			cursors.left.on('down', function () {
+				player.setVelocityX(-160);
+			});
+			cursors.left.on('up', function () {
+				player.setVelocityX(0);
+			});
+
+			cursors.right.on('down', function () {
+				player.setVelocityX(160);
+			});
+			cursors.right.on('up', function () {
+				player.setVelocityX(0);
+			});
+
+			cursors.up.on('down', function () {
+				player.setVelocityY(-160);
+			});
+			cursors.up.on('up', function () {
+				player.setVelocityY(0);
+			});
+
+			cursors.down.on('down', function () {
+				player.setVelocityY(160);
+			});
+			cursors.down.on('up', function () {
+				player.setVelocityY(0);
+			});
+		}
+
+	}
 }
