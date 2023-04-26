@@ -7,7 +7,8 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image('player', 'assets/img/player.png')
     this.load.image('bg', 'assets/img/bg.png')
     this.load.image('obstacleTexture', 'assets/img/asteroid.png')
-    this.load.image('laser', '/assets/img/beam.png')
+    this.load.image('laser', 'assets/img/beam.png')
+    this.load.image('heart', 'assets/img/heart.png')
 
     this.load.audio('bgMusic', ['assets/audio/theme.mp3'])
     this.load.audio('laserSound', ['assets/audio/beam.mp3'])

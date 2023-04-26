@@ -13,6 +13,8 @@ export default class MainScene extends Phaser.Scene {
   velocity = 500
   background
   obstacles: Obstacle[] = []
+  hearts: Phaser.GameObjects.Image[] = []
+  uiContainer: Phaser.GameObjects.Container
 
   constructor() {
     super({ key: 'MainScene' })
@@ -20,6 +22,9 @@ export default class MainScene extends Phaser.Scene {
 
   create() {
     this.useControls()
+    this.uiContainer = this.add.container(0, 0)
+    this.uiContainer.setDepth(10)
+    this.createHeartsUI(3)
 
     this.background = this.add
       .tileSprite(this.cameras.main.width / 2, this.cameras.main.height / 2, this.scale.height, this.scale.width, 'bg')
@@ -93,6 +98,24 @@ export default class MainScene extends Phaser.Scene {
       obstacles.push(obstacle)
     }
     return obstacles
+  }
+
+  createHeartsUI(initialCount: number) {
+    for (let i = 0; i < initialCount; i++) {
+      const heart = this.add.image(10 + i * 40, 10, 'heart')
+      heart.setScale(4)
+      heart.setOrigin(0, 0)
+      heart.setScrollFactor(0) // Fix the heart UI in place (not affected by camera scroll)
+      this.hearts.push(heart)
+      this.uiContainer.add(heart)
+    }
+  }
+
+  updateHeartsUI(newCount: number) {
+    // Update the visibility of hearts based on the new count
+    for (let i = 0; i < this.hearts.length; i++) {
+      this.hearts[i].setVisible(i < newCount)
+    }
   }
 
   useControls = () => {
