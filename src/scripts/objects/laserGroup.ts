@@ -26,6 +26,7 @@ export class LaserGroup extends Phaser.Physics.Arcade.Group {
 class Laser extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y) {
     super(scene, x, y, 'laser')
+    this.setScale(4)
   }
 
   preUpdate(time, delta) {

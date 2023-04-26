@@ -11,29 +11,27 @@ export default class MainScene extends Phaser.Scene {
   laserGroup: LaserGroup
   theme
   velocity = 500
+  background
+  obstacles: Obstacle[] = []
 
   constructor() {
     super({ key: 'MainScene' })
   }
 
-  preload() {
-    this.load.image('laser', '/assets/img/asteroid.png')
-  }
-
   create() {
     this.useControls()
 
-    const bg = this.add
-      .image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'bg')
+    this.background = this.add
+      .tileSprite(this.cameras.main.width / 2, this.cameras.main.height / 2, this.scale.height, this.scale.width, 'bg')
       .setOrigin(0.5, 0.5)
+      .setScale(4)
       .setAngle(90)
-      .setDisplaySize(this.scale.height, this.scale.width)
 
-    this.player = new Player(this, this.cameras.main.width / 2, 0)
+    this.player = new Player(this, this.cameras.main.width / 2, this.cameras.main.height * 0.9)
     this.laserGroup = new LaserGroup(this)
     this.fpsText = new FpsText(this)
 
-    this.theme = this.sound.add('bgMusic')
+    this.theme = this.sound.add('bgMusic', { volume: 0.25, loop: true })
     this.theme.play()
 
     const button = new Button(
@@ -44,17 +42,17 @@ export default class MainScene extends Phaser.Scene {
       () => (this.theme.mute = !this.theme.mute)
     )
 
-    this.generateMultipleObstacles(10)
+    this.obstacles = this.generateMultipleObstacles(10)
   }
 
   shootLaser() {
     this.laserGroup.fireLaser(this.player.x, this.player.y)
   }
 
-  generateMultipleObstacles(count: number): void {
+  generateMultipleObstacles(count: number): Obstacle[] {
     const obstacles: Obstacle[] = []
     const padding = 50 // A padding value to avoid obstacles being too close to each other
-    const minY = this.scale.height / 3 // Minimum Y position
+    const minY = this.scale.height / 6 // Minimum Y position
     const maxY = (this.scale.height * 2) / 3 // Maximum Y position
     const heightRange = maxY - minY // Height range for obstacles
 
@@ -86,8 +84,15 @@ export default class MainScene extends Phaser.Scene {
         // Handle collision logic here
       })
 
+      this.physics.add.collider(obstacle, this.laserGroup, (obstacle, laser) => {
+        // Handle collision logic here
+        laser.destroy()
+        obstacle.destroy()
+      })
+
       obstacles.push(obstacle)
     }
+    return obstacles
   }
 
   useControls = () => {
@@ -134,5 +139,13 @@ export default class MainScene extends Phaser.Scene {
 
   update() {
     this.fpsText.update()
+    // Scroll the background horizontally
+    this.background.tilePositionX -= 2
+    this.obstacles.forEach(obstacle => {
+      obstacle.setY(obstacle.y + 1)
+    })
+
+    // Optional: Follow the camera
+    this.background.x = this.cameras.main.scrollX
   }
 }
