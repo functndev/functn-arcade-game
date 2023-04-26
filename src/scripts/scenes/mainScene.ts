@@ -2,10 +2,12 @@ import FpsText from '../objects/fpsText'
 import { Obstacle } from '../objects/obstacle'
 import Player from '../objects/player'
 import Phaser from 'phaser'
+import { Button } from '../../util/Button'
 
 export default class MainScene extends Phaser.Scene {
   fpsText
   player: Player
+  theme
   velocity = 500
 
   constructor() {
@@ -13,48 +15,27 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    const video = this.add.video(this.scale.width / 2, this.scale.height / 2, 'bgVideo')
-    const scaleX = this.scale.width / video.width
-    const scaleY = this.scale.height / video.height
-    video.setScale(scaleX, scaleY)
-    video.play(true)
-    video.setMute(true)
+    this.useControls()
+
+    const bg = this.add
+      .image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'bg')
+      .setOrigin(0.5, 0.5)
+      .setAngle(90)
+      .setDisplaySize(this.scale.height, this.scale.width)
 
     this.player = new Player(this, this.cameras.main.width / 2, 0)
     this.fpsText = new FpsText(this)
 
-    if (this.input && this.input.keyboard) {
-      const cursors = this.input.keyboard.createCursorKeys()
+    this.theme = this.sound.add('bgMusic')
+    this.theme.play()
 
-      cursors.left.on('down', () => {
-        this.player.setVelocityX(-this.velocity)
-      })
-
-      cursors.left.on('up', () => {
-        this.player.setVelocityX(0)
-      })
-
-      cursors.right.on('down', () => {
-        this.player.setVelocityX(this.velocity)
-      })
-      cursors.right.on('up', () => {
-        this.player.setVelocityX(0)
-      })
-
-      cursors.up.on('down', () => {
-        this.player.setVelocityY(-this.velocity)
-      })
-      cursors.up.on('up', () => {
-        this.player.setVelocityY(0)
-      })
-
-      cursors.down.on('down', () => {
-        this.player.setVelocityY(this.velocity)
-      })
-      cursors.down.on('up', () => {
-        this.player.setVelocityY(0)
-      })
-    }
+    const button = new Button(
+      this.cameras.main.width * 0.95,
+      50,
+      'Sound',
+      this,
+      () => (this.theme.mute = !this.theme.mute)
+    )
 
     this.generateMultipleObstacles(10)
   }
@@ -95,6 +76,41 @@ export default class MainScene extends Phaser.Scene {
       })
 
       obstacles.push(obstacle)
+    }
+  }
+
+  useControls = () => {
+    if (this.input && this.input.keyboard) {
+      const cursors = this.input.keyboard.createCursorKeys()
+
+      cursors.left.on('down', () => {
+        this.player.setVelocityX(-this.velocity)
+      })
+
+      cursors.left.on('up', () => {
+        this.player.setVelocityX(0)
+      })
+
+      cursors.right.on('down', () => {
+        this.player.setVelocityX(this.velocity)
+      })
+      cursors.right.on('up', () => {
+        this.player.setVelocityX(0)
+      })
+
+      cursors.up.on('down', () => {
+        this.player.setVelocityY(-this.velocity)
+      })
+      cursors.up.on('up', () => {
+        this.player.setVelocityY(0)
+      })
+
+      cursors.down.on('down', () => {
+        this.player.setVelocityY(this.velocity)
+      })
+      cursors.down.on('up', () => {
+        this.player.setVelocityY(0)
+      })
     }
   }
 

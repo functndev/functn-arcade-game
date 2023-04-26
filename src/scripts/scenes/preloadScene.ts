@@ -8,6 +8,8 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image('bg', 'assets/img/bg.png')
     this.load.image('obstacleTexture', 'assets/img/asteroid.png')
 
+    this.load.audio('bgMusic', ['assets/audio/theme.mp3'])
+
     this.load.video('bgVideo', 'assets/video/video.mp4')
   }
 

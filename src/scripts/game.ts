@@ -4,7 +4,6 @@ import PreloadScene from './scenes/preloadScene'
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
-  backgroundColor: '#ffffff',
   scale: {
     parent: 'phaser-game',
     mode: Phaser.Scale.FIT,
@@ -12,6 +11,7 @@ const config: Phaser.Types.Core.GameConfig = {
     width: window.innerWidth,
     height: window.innerHeight
   },
+  title: 'Functn Space Shooter',
   scene: [PreloadScene, MainScene],
   render: { pixelArt: true, antialias: false, roundPixels: true },
   physics: {
