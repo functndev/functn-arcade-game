@@ -1,15 +1,21 @@
 import FpsText from '../objects/fpsText'
 import { Obstacle } from '../objects/obstacle'
+import { LaserGroup } from '../objects/laserGroup'
 import Player from '../objects/player'
 import Phaser from 'phaser'
 
 export default class MainScene extends Phaser.Scene {
   fpsText
   player: Player
+  laserGroup: LaserGroup
   velocity = 500
 
   constructor() {
     super({ key: 'MainScene' })
+  }
+
+  preload() {
+	  this.load.image('laser', '/assets/img/asteroid.png');
   }
 
   create() {
@@ -21,11 +27,15 @@ export default class MainScene extends Phaser.Scene {
     video.setMute(true)
 
     this.player = new Player(this, this.cameras.main.width / 2, 0)
+	this.laserGroup = new LaserGroup(this)
     this.fpsText = new FpsText(this)
 
     if (this.input && this.input.keyboard) {
       const cursors = this.input.keyboard.createCursorKeys()
+	  const spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+	  /* movement
+	   */
       cursors.left.on('down', () => {
         this.player.setVelocityX(-this.velocity)
       })
@@ -54,9 +64,19 @@ export default class MainScene extends Phaser.Scene {
       cursors.down.on('up', () => {
         this.player.setVelocityY(0)
       })
+
+	  /* shooting
+	   */
+	  spaceBar.on('down', () => {
+		this.shootLaser()
+	  })
     }
 
     this.generateMultipleObstacles(10)
+  }
+
+  shootLaser() {
+	  this.laserGroup.fireLaser(this.player.x, this.player.y);
   }
 
   generateMultipleObstacles(count: number): void {
