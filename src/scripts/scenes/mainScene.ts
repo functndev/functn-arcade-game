@@ -1,5 +1,6 @@
 import FpsText from '../objects/fpsText'
 import { Obstacle } from '../objects/obstacle'
+import { LaserGroup } from '../objects/laserGroup'
 import Player from '../objects/player'
 import Phaser from 'phaser'
 import { Button } from '../../util/Button'
@@ -7,11 +8,16 @@ import { Button } from '../../util/Button'
 export default class MainScene extends Phaser.Scene {
   fpsText
   player: Player
+  laserGroup: LaserGroup
   theme
   velocity = 500
 
   constructor() {
     super({ key: 'MainScene' })
+  }
+
+  preload() {
+	  this.load.image('laser', '/assets/img/asteroid.png');
   }
 
   create() {
@@ -24,6 +30,7 @@ export default class MainScene extends Phaser.Scene {
       .setDisplaySize(this.scale.height, this.scale.width)
 
     this.player = new Player(this, this.cameras.main.width / 2, 0)
+	this.laserGroup = new LaserGroup(this)
     this.fpsText = new FpsText(this)
 
     this.theme = this.sound.add('bgMusic')
@@ -38,6 +45,10 @@ export default class MainScene extends Phaser.Scene {
     )
 
     this.generateMultipleObstacles(10)
+  }
+
+  shootLaser() {
+	  this.laserGroup.fireLaser(this.player.x, this.player.y);
   }
 
   generateMultipleObstacles(count: number): void {
