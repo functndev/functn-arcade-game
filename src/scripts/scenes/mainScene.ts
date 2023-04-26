@@ -17,7 +17,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   preload() {
-	  this.load.image('laser', '/assets/img/asteroid.png');
+    this.load.image('laser', '/assets/img/asteroid.png')
   }
 
   create() {
@@ -30,7 +30,7 @@ export default class MainScene extends Phaser.Scene {
       .setDisplaySize(this.scale.height, this.scale.width)
 
     this.player = new Player(this, this.cameras.main.width / 2, 0)
-	this.laserGroup = new LaserGroup(this)
+    this.laserGroup = new LaserGroup(this)
     this.fpsText = new FpsText(this)
 
     this.theme = this.sound.add('bgMusic')
@@ -48,7 +48,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   shootLaser() {
-	  this.laserGroup.fireLaser(this.player.x, this.player.y);
+    this.laserGroup.fireLaser(this.player.x, this.player.y)
   }
 
   generateMultipleObstacles(count: number): void {
@@ -93,6 +93,7 @@ export default class MainScene extends Phaser.Scene {
   useControls = () => {
     if (this.input && this.input.keyboard) {
       const cursors = this.input.keyboard.createCursorKeys()
+      const spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
 
       cursors.left.on('down', () => {
         this.player.setVelocityX(-this.velocity)
@@ -121,6 +122,12 @@ export default class MainScene extends Phaser.Scene {
       })
       cursors.down.on('up', () => {
         this.player.setVelocityY(0)
+      })
+
+      /* shooting
+       */
+      spaceBar.on('down', () => {
+        this.shootLaser()
       })
     }
   }
